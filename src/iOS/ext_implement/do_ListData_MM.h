@@ -8,7 +8,8 @@
 
 #import "do_ListData_IMM.h"
 #import "doMultitonModule.h"
+#import "doIListData.h"
 
-@interface do_ListData_MM : doMultitonModule<do_ListData_IMM>
+@interface do_ListData_MM : doMultitonModule<do_ListData_IMM,doIListData>
 
 @end
