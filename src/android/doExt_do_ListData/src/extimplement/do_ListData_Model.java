@@ -96,8 +96,8 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	 */
 	@Override
 	public void addData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		DoJsonNode _data = _dictParas.getOneNode("data");
-		this.data.addAll(_data.getAllValues());
+		List<DoJsonValue> _data = _dictParas.getOneArray("data");
+		this.data.addAll(_data);
 	}
 
 	/**
@@ -134,9 +134,9 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	 */
 	@Override
 	public void initData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		DoJsonNode _data = _dictParas.getOneNode("data");
+		List<DoJsonValue> _data = _dictParas.getOneArray("data");
 		this.data.clear();
-		this.data.addAll(_data.getAllValues());
+		this.data.addAll(_data);
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	public void updateData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
 		int _index = _dictParas.getOneInteger("index", 0);
 		String _data = _dictParas.getOneText("data", "");
-		if (_index > 0 && _index < this.data.size() - 1) {
+		if (_index < 0 || _index > this.data.size() - 1) {
 			throw new Exception("索引不存在");
 		}
 		DoJsonValue _value = new DoJsonValue();
