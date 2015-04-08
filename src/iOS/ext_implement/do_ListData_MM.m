@@ -81,7 +81,7 @@
  {
      doJsonNode *_dictParas = [parms objectAtIndex:0];
      //自己的代码实现
-     NSArray* datas = [_dictParas GetOneNodeArray:@"data"];
+     NSArray* datas = [_dictParas GetOneArray:@"data"];
      [array addObjectsFromArray:datas];
      
  }
@@ -104,7 +104,7 @@
  {
      doJsonNode *_dictParas = [parms objectAtIndex:0];
      //自己的代码实现
-     NSArray* datas = [_dictParas GetOneNodeArray:@"data"];
+     NSArray* datas = [_dictParas GetOneArray:@"data"];
      [array removeAllObjects];
      [array addObjectsFromArray:datas];
  }
