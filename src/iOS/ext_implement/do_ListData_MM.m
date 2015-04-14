@@ -48,6 +48,12 @@
     //自定义的全局属性
 }
 #pragma mark -
+#pragma mark - doIDataSource implements
+-(void) GetJsonData:(id<doGetJsonCallBack>) _callback
+{
+    [_callback doGetJsonCallBack:self];
+}
+#pragma mark -
 #pragma mark - 同步异步方法的实现
 /*
  1.参数节点
