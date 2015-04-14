@@ -7,6 +7,7 @@ import core.helper.jsonparse.DoJsonNode;
 import core.helper.jsonparse.DoJsonValue;
 import core.interfaces.DoIListData;
 import core.interfaces.DoIScriptEngine;
+import core.interfaces.datamodel.DoIDataSource;
 import core.object.DoInvokeResult;
 import extdefine.do_ListData_IMethod;
 import extdefine.do_ListData_MAbstract;
@@ -18,7 +19,7 @@ import extdefine.do_ListData_MAbstract;
  * 参数解释：@_messageName字符串事件名称，@jsonResult传递事件参数对象； 获取DoInvokeResult对象方式new
  * DoInvokeResult(this.getUniqueKey());
  */
-public class do_ListData_Model extends do_ListData_MAbstract implements do_ListData_IMethod, DoIListData {
+public class do_ListData_Model extends do_ListData_MAbstract implements do_ListData_IMethod, DoIListData, DoIDataSource {
 
 	private List<DoJsonValue> data;
 
@@ -193,5 +194,10 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	@Override
 	public Object getData(int _index) {
 		return this.data.get(_index);
+	}
+
+	@Override
+	public void getJsonData(DoGetJsonCallBack _callback) throws Exception {
+		_callback.doGetJsonCallBack(this);
 	}
 }
