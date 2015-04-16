@@ -1,4 +1,4 @@
-package extimplement;
+package doext.implement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import core.interfaces.DoIListData;
 import core.interfaces.DoIScriptEngine;
 import core.interfaces.datamodel.DoIDataSource;
 import core.object.DoInvokeResult;
-import extdefine.do_ListData_IMethod;
-import extdefine.do_ListData_MAbstract;
+import doext.define.do_ListData_IMethod;
+import doext.define.do_ListData_MAbstract;
 
 /**
  * 自定义扩展API组件Model实现，继承do_ListData_MAbstract抽象类，并实现do_ListData_IMethod接口方法；
