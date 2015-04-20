@@ -5,3 +5,4 @@ gen/
 .settings/
 proguard/
 /src/android/doExt_do_ListData/do_ListData.zip
+*.classpath
