@@ -3,6 +3,7 @@ package doext.implement;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.helper.DoTextHelper;
 import core.helper.jsonparse.DoJsonNode;
 import core.helper.jsonparse.DoJsonValue;
 import core.interfaces.DoIListData;
@@ -42,6 +43,14 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 			addData(_dictParas, _scriptEngine, _invokeResult);
 			return true;
 		}
+		if ("addOne".equals(_methodName)) {
+			addOne(_dictParas, _scriptEngine, _invokeResult);
+			return true;
+		}
+		if ("updateOne".equals(_methodName)) {
+			updateOne(_dictParas, _scriptEngine, _invokeResult);
+			return true;
+		}
 		if ("getCount".equals(_methodName)) {
 			getCount(_dictParas, _scriptEngine, _invokeResult);
 			return true;
@@ -50,20 +59,23 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 			getData(_dictParas, _scriptEngine, _invokeResult);
 			return true;
 		}
-		if ("initData".equals(_methodName)) {
-			initData(_dictParas, _scriptEngine, _invokeResult);
+		if ("getRange".equals(_methodName)) {
+			getRange(_dictParas, _scriptEngine, _invokeResult);
 			return true;
 		}
+
 		if ("removeAll".equals(_methodName)) {
 			removeAll(_dictParas, _scriptEngine, _invokeResult);
 			return true;
 		}
-		if ("removeData".equals(_methodName)) {
-			removeData(_dictParas, _scriptEngine, _invokeResult);
+
+		if ("removeRange".equals(_methodName)) {
+			removeRange(_dictParas, _scriptEngine, _invokeResult);
 			return true;
 		}
-		if ("updateData".equals(_methodName)) {
-			updateData(_dictParas, _scriptEngine, _invokeResult);
+
+		if ("removeData".equals(_methodName)) {
+			removeData(_dictParas, _scriptEngine, _invokeResult);
 			return true;
 		}
 		return super.invokeSyncMethod(_methodName, _dictParas, _scriptEngine, _invokeResult);
@@ -98,7 +110,23 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	@Override
 	public void addData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
 		List<DoJsonValue> _data = _dictParas.getOneArray("data");
-		this.data.addAll(_data);
+		int _index = DoTextHelper.strToInt(_dictParas.getOneText("index", ""), -1);
+		if (_index != -1) {
+			this.data.addAll(_index, _data);
+		} else {
+			this.data.addAll(_data);
+		}
+	}
+
+	@Override
+	public void addOne(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		DoJsonValue _data = _dictParas.getOneValue("data");
+		int _index = DoTextHelper.strToInt(_dictParas.getOneText("index", ""), -1);
+		if (_index != -1) {
+			this.data.add(_index, _data);
+		} else {
+			this.data.add(_data);
+		}
 	}
 
 	/**
@@ -122,22 +150,16 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	 */
 	@Override
 	public void getData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		int _index = _dictParas.getOneInteger("index", 0);
-		_invokeResult.setResultText(this.data.get(_index).exportToText(false));
-	}
-
-	/**
-	 * 设置数据；
-	 * 
-	 * @_dictParas 参数（K,V），可以通过此对象提供相关方法来获取参数值（Key：为参数名称）；
-	 * @_scriptEngine 当前Page JS上下文环境对象
-	 * @_invokeResult 用于返回方法结果对象
-	 */
-	@Override
-	public void initData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		List<DoJsonValue> _data = _dictParas.getOneArray("data");
-		this.data.clear();
-		this.data.addAll(_data);
+		List<String> _indexs = _dictParas.getOneTextArray("indexs");
+		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
+		for (int i = 0; i < _indexs.size(); i++) {
+			int _index = DoTextHelper.strToInt(_indexs.get(i), 0);
+			DoJsonValue _value = this.data.get(_index);
+			if (_value != null) {
+				_data.add(_value);
+			}
+		}
+		_invokeResult.setResultArray(_data);
 	}
 
 	/**
@@ -152,6 +174,42 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 		this.data.clear();
 	}
 
+	@Override
+	public void getRange(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		int _startIndex = _dictParas.getOneInteger("startIndex", -1);
+		if (_startIndex < 0 || _startIndex > this.data.size() - 1) {
+			throw new Exception("索引不存在");
+		}
+		int _length = _dictParas.getOneInteger("length", -1);
+		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
+		int _endIndex = _startIndex + _length - 1;
+		for (int i = _startIndex; i < _endIndex; i++) {
+			DoJsonValue _value = this.data.get(i);
+			if (_value != null) {
+				_data.add(this.data.get(i));
+			}
+		}
+		_invokeResult.setResultArray(_data);
+	}
+
+	@Override
+	public void removeRange(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		int _startIndex = _dictParas.getOneInteger("startIndex", -1);
+		if (_startIndex < 0 || _startIndex > this.data.size() - 1) {
+			throw new Exception("索引不存在");
+		}
+		int _length = _dictParas.getOneInteger("length", -1);
+		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
+		int _endIndex = _startIndex + _length - 1;
+		for (int i = _startIndex; i < _endIndex; i++) {
+			DoJsonValue _value = this.data.get(i);
+			if (_value != null) {
+				_data.add(_value);
+			}
+		}
+		this.data.removeAll(_data);
+	}
+
 	/**
 	 * 删除特定行的对象；
 	 * 
@@ -161,8 +219,16 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	 */
 	@Override
 	public void removeData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		int _index = _dictParas.getOneInteger("index", 0);
-		this.data.remove(_index);
+		List<String> _indexs = _dictParas.getOneTextArray("indexs");
+		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
+		for (int i = 0; i < _indexs.size(); i++) {
+			int _index = DoTextHelper.strToInt(_indexs.get(i), 0);
+			DoJsonValue _value = this.data.get(_index);
+			if (_value != null) {
+				_data.add(_value);
+			}
+		}
+		this.data.removeAll(_data);
 	}
 
 	/**
@@ -173,8 +239,8 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	 * @_invokeResult 用于返回方法结果对象
 	 */
 	@Override
-	public void updateData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		int _index = _dictParas.getOneInteger("index", 0);
+	public void updateOne(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		int _index = _dictParas.getOneInteger("index", -1);
 		String _data = _dictParas.getOneText("data", "");
 		if (_index < 0 || _index > this.data.size() - 1) {
 			throw new Exception("索引不存在");
