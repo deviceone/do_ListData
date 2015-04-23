@@ -59,6 +59,10 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 			getData(_dictParas, _scriptEngine, _invokeResult);
 			return true;
 		}
+		if ("getOne".equals(_methodName)) {
+			getOne(_dictParas, _scriptEngine, _invokeResult);
+			return true;
+		}
 		if ("getRange".equals(_methodName)) {
 			getRange(_dictParas, _scriptEngine, _invokeResult);
 			return true;
@@ -160,6 +164,15 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 			}
 		}
 		_invokeResult.setResultArray(_data);
+	}
+
+	@Override
+	public void getOne(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		int _index = DoTextHelper.strToInt(_dictParas.getOneText("index", ""), -1);
+		if (_index < 0 || _index > this.data.size() - 1) {
+			throw new Exception("索引不存在");
+		}
+		_invokeResult.setResultText(this.data.get(_index).exportToText(false));
 	}
 
 	/**
