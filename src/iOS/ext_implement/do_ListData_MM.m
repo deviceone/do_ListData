@@ -97,7 +97,7 @@
 {
     doJsonNode *_dictParas = [parms objectAtIndex:0];
     //自己的代码实现
-    NSString* data = [_dictParas GetOneText:@"data" : @""];
+    doJsonValue* data = [_dictParas GetOneValue:@"data"];
     int index = [_dictParas GetOneInteger:@"index" :(int)array.count];
     [array insertObject:data atIndex:index];
     
