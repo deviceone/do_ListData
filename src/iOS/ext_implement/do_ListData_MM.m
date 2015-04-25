@@ -13,10 +13,11 @@
 #import "doInvokeResult.h"
 #import "doJsonNode.h"
 #import "doJsonValue.h"
+#import "doTextHelper.h"
 
 @implementation do_ListData_MM
 {
-    @private
+@private
     NSMutableArray* array;
 }
 #pragma mark - doIListData
@@ -83,57 +84,121 @@
  [_scritEngine Callback:_callbackName :_invokeResult];
  */
 //同步
- - (void)addData:(NSArray *)parms
- {
-     doJsonNode *_dictParas = [parms objectAtIndex:0];
-     //自己的代码实现
-     NSArray* datas = [_dictParas GetOneArray:@"data"];
-     [array addObjectsFromArray:datas];
-     
- }
- - (void)getCount:(NSArray *)parms
- {
-     doInvokeResult *_invokeResult = [parms objectAtIndex:2];
-     [_invokeResult SetResultInteger:(int)array.count];
-     //自己的代码实现
- }
- - (void)getData:(NSArray *)parms
- {
-     doJsonNode *_dictParas = [parms objectAtIndex:0];
-     //自己的代码实现
-     int index = [_dictParas GetOneInteger:@"index" : 0];
-     doJsonValue* _jsonValue = array[index];
-     doInvokeResult *_invokeResult = [parms objectAtIndex:2];
-     [_invokeResult SetResultText:[_jsonValue ExportToText:YES]];
- }
- - (void)initData:(NSArray *)parms
- {
-     doJsonNode *_dictParas = [parms objectAtIndex:0];
-     //自己的代码实现
-     NSArray* datas = [_dictParas GetOneArray:@"data"];
-     [array removeAllObjects];
-     [array addObjectsFromArray:datas];
- }
- - (void)removeAll:(NSArray *)parms
- {
-     //自己的代码实现
-     [array removeAllObjects];
- }
- - (void)removeData:(NSArray *)parms
- {
-     doJsonNode *_dictParas = [parms objectAtIndex:0];
-     //自己的代码实现
-     int index = [_dictParas GetOneInteger:@"index" : 0];
-     [array removeObjectAtIndex:index];
- }
- - (void)updateData:(NSArray *)parms
- {
-     doJsonNode *_dictParas = [parms objectAtIndex:0];
-     //自己的代码实现
-     int index = [_dictParas GetOneInteger:@"index" : 0];
-     doJsonValue* _jsonValue = [_dictParas GetOneValue:@"data"];
-     array[index] = _jsonValue;
- }
+- (void)addData:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    NSArray* datas = [_dictParas GetOneArray:@"data"];
+    int index = [_dictParas GetOneInteger:@"index" :(int)array.count];
+    [array insertObjects:datas atIndexes:[NSIndexSet indexSetWithIndex:index]];
+    
+}
+- (void)addOne:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    NSString* data = [_dictParas GetOneText:@"data" : @""];
+    int index = [_dictParas GetOneInteger:@"index" :(int)array.count];
+    [array insertObject:data atIndex:index];
+    
+}
+- (void)getCount:(NSArray *)parms
+{
+    doInvokeResult *_invokeResult = [parms objectAtIndex:2];
+    [_invokeResult SetResultInteger:(int)array.count];
+    //自己的代码实现
+}
+- (void)getOne:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    int index = [_dictParas GetOneInteger:@"index" : 0];
+    doJsonValue* _jsonValue = array[index];
+    doInvokeResult *_invokeResult = [parms objectAtIndex:2];
+    [_invokeResult SetResultText:[_jsonValue ExportToText:YES]];
+}
+- (void)getData:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    NSArray* indexs = [_dictParas GetOneTextArray:@"indexs"];
+    NSMutableArray* result = [[NSMutableArray alloc]initWithCapacity:indexs.count];
+    for(NSString* index in indexs)
+    {
+        int _index = [[doTextHelper Instance] StrToInt:index :-1];
+        if(_index<0)
+            [result addObject:@""];
+        else{
+            doJsonValue* _jsonValue = array[_index];
+            [result addObject:[_jsonValue ExportToText:YES]];
+        }
+    }
+    doInvokeResult *_invokeResult = [parms objectAtIndex:2];
+    [_invokeResult SetResultTextArray:result ];
+}
+- (void)getRange:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    int index = [_dictParas GetOneInteger:@"startIndex" : 0];
+    int length = [_dictParas GetOneInteger:@"length" : 0];
+    int realLength = length;
+    if(index+realLength>array.count)
+        realLength = (int)array.count - index;
+    if(realLength<0) realLength = 0;
+    NSMutableArray* result = [[NSMutableArray alloc]initWithCapacity:realLength];
+    for(int i =index ;i<index+realLength;i++)
+    {
+        doJsonValue* _jsonValue = array[i];
+        [result addObject:[_jsonValue ExportToText:YES]];
+    }
+    doInvokeResult *_invokeResult = [parms objectAtIndex:2];
+    [_invokeResult SetResultTextArray:result ];
+}
+
+- (void)removeAll:(NSArray *)parms
+{
+    //自己的代码实现
+    [array removeAllObjects];
+}
+- (void)removeOne:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    int index = [_dictParas GetOneInteger:@"index" : 0];
+    [array removeObjectAtIndex:index];
+}
+- (void)removeData:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    NSArray* indexs = [_dictParas GetOneTextArray:@"indexs"];
+    NSMutableIndexSet* result = [[NSMutableIndexSet alloc]init];
+    for(NSString* index in indexs)
+    {
+        int _index = [[doTextHelper Instance] StrToInt:index :-1];
+        if(_index>0)
+           [result addIndex:_index];
+    }
+    [array removeObjectsAtIndexes:result];
+}
+- (void)removeRange:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    int index = [_dictParas GetOneInteger:@"startIndex" : 0];
+    int length = [_dictParas GetOneInteger:@"length" : 0];
+    NSRange range = NSMakeRange(index, length);
+    [array removeObjectsInRange:range];
+}
+- (void)updateOne:(NSArray *)parms
+{
+    doJsonNode *_dictParas = [parms objectAtIndex:0];
+    //自己的代码实现
+    int index = [_dictParas GetOneInteger:@"index" : 0];
+    doJsonValue* _jsonValue = [_dictParas GetOneValue:@"data"];
+    array[index] = _jsonValue;
+}
 //异步
 
 @end
