@@ -115,7 +115,7 @@
     int index = [_dictParas GetOneInteger:@"index" : 0];
     doJsonValue* _jsonValue = array[index];
     doInvokeResult *_invokeResult = [parms objectAtIndex:2];
-    [_invokeResult SetResultText:[_jsonValue ExportToText:YES]];
+    [_invokeResult SetResultValue:_jsonValue];
 }
 - (void)getData:(NSArray *)parms
 {
@@ -130,11 +130,11 @@
             [result addObject:@""];
         else{
             doJsonValue* _jsonValue = array[_index];
-            [result addObject:[_jsonValue ExportToText:YES]];
+            [result addObject:_jsonValue];
         }
     }
     doInvokeResult *_invokeResult = [parms objectAtIndex:2];
-    [_invokeResult SetResultTextArray:result ];
+    [_invokeResult SetResultArray:result ];
 }
 - (void)getRange:(NSArray *)parms
 {
@@ -150,10 +150,10 @@
     for(int i =index ;i<index+realLength;i++)
     {
         doJsonValue* _jsonValue = array[i];
-        [result addObject:[_jsonValue ExportToText:YES]];
+        [result addObject:_jsonValue];
     }
     doInvokeResult *_invokeResult = [parms objectAtIndex:2];
-    [_invokeResult SetResultTextArray:result ];
+    [_invokeResult SetResultArray:result ];
 }
 
 - (void)removeAll:(NSArray *)parms
