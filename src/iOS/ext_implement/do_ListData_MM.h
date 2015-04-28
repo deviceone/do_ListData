@@ -11,6 +11,6 @@
 #import "doIListData.h"
 #import "doIDataSource.h"
 
-@interface do_ListData_MM : doMultitonModule<do_ListData_IMM,doIListData,doIDataSource>
+@interface do_ListData_MM : doMultitonModule<do_ListData_IMM,doIDataSource>
 
 @end

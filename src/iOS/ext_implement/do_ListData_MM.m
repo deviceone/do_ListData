@@ -20,16 +20,6 @@
 @private
     NSMutableArray* array;
 }
-#pragma mark - doIListData
--(int) GetCount
-{
-    return (int)array.count;
-}
--(id) GetData:(int) index
-{
-    return array[index];
-}
-
 #pragma mark - 注册属性（--属性定义--）
 /*
  [self RegistProperty:[[doProperty alloc]init:@"属性名" :属性类型 :@"默认值" : BOOL:是否支持代码修改属性]];
@@ -52,7 +42,7 @@
 #pragma mark - doIDataSource implements
 -(void) GetJsonData:(id<doGetJsonCallBack>) _callback
 {
-    [_callback doGetJsonCallBack:self];
+    [_callback doGetJsonCallBack:array];
 }
 #pragma mark -
 #pragma mark - 同步异步方法的实现
