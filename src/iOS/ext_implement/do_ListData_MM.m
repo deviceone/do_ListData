@@ -40,9 +40,11 @@
 }
 #pragma mark -
 #pragma mark - doIDataSource implements
--(void) GetJsonData:(id<doGetJsonCallBack>) _callback
+-(doJsonValue*) GetJsonData;
 {
-    [_callback doGetJsonCallBack:array];
+    doJsonValue* jsonvalue = [[doJsonValue alloc]init];
+    [jsonvalue SetArray:array];
+    return jsonvalue;
 }
 #pragma mark -
 #pragma mark - 同步异步方法的实现
