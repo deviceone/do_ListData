@@ -107,8 +107,10 @@
     //自己的代码实现
     NSArray* datas = [_dictParas GetOneArray:@"data"];
     int index = [_dictParas GetOneInteger:@"index" :(int)array.count];
-    [array insertObjects:datas atIndexes:[NSIndexSet indexSetWithIndex:index]];
-    
+    for(id data in datas){
+        [array insertObject:data atIndex:index];
+        index++;
+    }
 }
 - (void)addOne:(NSArray *)parms
 {
