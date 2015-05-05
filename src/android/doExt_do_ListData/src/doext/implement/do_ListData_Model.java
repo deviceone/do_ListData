@@ -115,7 +115,7 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	public void addData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
 		List<DoJsonValue> _data = _dictParas.getOneArray("data");
 		int _index = DoTextHelper.strToInt(_dictParas.getOneText("index", ""), -1);
-		if (_index != -1) {
+		if (_index != -1 && _index < this.data.size() - 1) {
 			this.data.addAll(_index, _data);
 		} else {
 			this.data.addAll(_data);
@@ -126,10 +126,7 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	public void addOne(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
 		DoJsonValue _data = _dictParas.getOneValue("data");
 		int _index = DoTextHelper.strToInt(_dictParas.getOneText("index", ""), -1);
-		if (_index >= this.data.size()) {
-			throw new Exception("索引下标越界，ListData Maxsize:" + this.data.size() + ", _index:" + _index);
-		}
-		if (_index != -1) {
+		if (_index != -1 && _index < this.data.size() - 1) {
 			this.data.add(_index, _data);
 		} else {
 			this.data.add(_data);
@@ -157,6 +154,9 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	 */
 	@Override
 	public void getData(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		if (this.data.size() == 0) {
+			return;
+		}
 		List<String> _indexs = _dictParas.getOneTextArray("indexs");
 		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
 		for (int i = 0; i < _indexs.size(); i++) {
@@ -171,9 +171,17 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 
 	@Override
 	public void getOne(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		if (this.data.size() == 0) {
+			return;
+		}
+
 		int _index = DoTextHelper.strToInt(_dictParas.getOneText("index", ""), -1);
-		if (_index < 0 || _index > this.data.size() - 1) {
-			throw new Exception("索引下标越界，ListData Maxsize:" + this.data.size() + ", _index:" + _index);
+		if (_index < 0) {
+			_index = 0;
+		}
+
+		if (_index != 0 && _index > this.data.size() - 1) {
+			_index = this.data.size() - 1;
 		}
 		_invokeResult.setResultValue(this.data.get(_index));
 	}
@@ -192,13 +200,28 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 
 	@Override
 	public void getRange(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		if (this.data.size() == 0) {
+			return;
+		}
 		int _startIndex = _dictParas.getOneInteger("startIndex", -1);
 		int _length = _dictParas.getOneInteger("length", -1);
-		if ((_startIndex < 0 || _startIndex > this.data.size() - 1) || (_length < 0 || _length >= this.data.size())) {
-			throw new Exception("索引下标越界，ListData Maxsize:" + this.data.size() + ", startIndex:" + _startIndex + ",length:" + _length);
+		if (_startIndex < 0) {
+			_startIndex = 0;
 		}
+
+		if (_startIndex != 0 && _startIndex > this.data.size() - 1) {
+			_startIndex = this.data.size() - 1;
+		}
+
+		if (_length < 0) {
+			_length = 0;
+		}
+		if (_length >= this.data.size()) {
+			_length = this.data.size();
+		}
+
 		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
-		for (int i = _startIndex; i <= _length; i++) {
+		for (int i = _startIndex; i < _length; i++) {
 			DoJsonValue _value = this.data.get(i);
 			if (_value != null) {
 				_data.add(this.data.get(i));
@@ -214,9 +237,21 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 		}
 		int _startIndex = _dictParas.getOneInteger("startIndex", -1);
 		int _length = _dictParas.getOneInteger("length", -1);
-		if ((_startIndex < 0 || _startIndex > this.data.size() - 1) || (_length < 0 || _length >= this.data.size())) {
-			throw new Exception("索引下标越界，ListData Maxsize:" + this.data.size() + ", startIndex:" + _startIndex + ",length:" + _length);
+		if (_startIndex < 0) {
+			_startIndex = 0;
 		}
+
+		if (_startIndex != 0 && _startIndex > this.data.size() - 1) {
+			_startIndex = this.data.size() - 1;
+		}
+
+		if (_length < 0) {
+			_length = 0;
+		}
+		if (_length >= this.data.size()) {
+			_length = this.data.size();
+		}
+
 		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
 		for (int i = _startIndex; i < _length; i++) {
 			DoJsonValue _value = this.data.get(i);
@@ -243,9 +278,14 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 		List<DoJsonValue> _data = new ArrayList<DoJsonValue>();
 		for (int i = 0; i < _indexs.size(); i++) {
 			int _index = DoTextHelper.strToInt(_indexs.get(i), 0);
-			if (_index < 0 || _index > this.data.size() - 1) {
-				throw new Exception("索引下标越界，ListData Maxsize:" + this.data.size() + ", indexs:" + _indexs.toString());
+			if (_index < 0) {
+				_index = 0;
 			}
+
+			if (_index != 0 && _index > this.data.size() - 1) {
+				_index = this.data.size() - 1;
+			}
+
 			DoJsonValue _value = this.data.get(_index);
 			if (_value != null) {
 				_data.add(_value);
@@ -263,11 +303,19 @@ public class do_ListData_Model extends do_ListData_MAbstract implements do_ListD
 	 */
 	@Override
 	public void updateOne(DoJsonNode _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		if (this.data.size() == 0) {
+			return;
+		}
 		int _index = _dictParas.getOneInteger("index", -1);
 		String _data = _dictParas.getOneText("data", "");
-		if (_index < 0 || _index > this.data.size() - 1) {
-			throw new Exception("索引下标越界");
+		if (_index < 0) {
+			_index = 0;
 		}
+
+		if (_index != 0 && _index > this.data.size() - 1) {
+			_index = this.data.size() - 1;
+		}
+
 		DoJsonValue _value = new DoJsonValue();
 		_value.loadDataFromText(_data);
 		this.data.remove(_index);
