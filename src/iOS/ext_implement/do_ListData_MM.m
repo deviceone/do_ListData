@@ -207,6 +207,7 @@
     //自己的代码实现
     int index = [_dictParas GetOneInteger:@"startIndex" : 0];
     int length = [_dictParas GetOneInteger:@"length" : 0];
+    if(length>array.count)length=(int)array.count;
     NSRange range = NSMakeRange(index, length);
     [array removeObjectsInRange:range];
 }
