@@ -141,13 +141,12 @@
     doJsonNode *_dictParas = [parms objectAtIndex:0];
     //自己的代码实现
     NSArray* indexs = [_dictParas GetOneTextArray:@"indexs"];
-    NSMutableArray* result = [[NSMutableArray alloc]initWithCapacity:indexs.count];
+    NSMutableArray* result = [[NSMutableArray alloc]init];
     for(NSString* index in indexs)
     {
         int _index = [[doTextHelper Instance] StrToInt:index :-1];
-        if(_index<0)
-            [result addObject:@""];
-        else{
+        int temp = (int)array.count-1;
+        if(temp>=_index){
             doJsonValue* _jsonValue = array[_index];
             [result addObject:_jsonValue];
         }
